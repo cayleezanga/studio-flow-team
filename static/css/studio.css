@@ -1,0 +1,9 @@
+:root { --cream:#f6f3ee; --sage:#657966; --ink:#282b26; }
+body { color:var(--ink); background:#fffdfa; }
+.brand-accent { color:var(--sage); }
+.hero { background:linear-gradient(110deg, #f1eee5, #e5e9df); }
+.letter-spacing { letter-spacing:.13em; }
+.session-card { background:var(--cream); border-radius:18px; }
+.btn-dark { background:#303b31; border-color:#303b31; }
+.btn-dark:hover { background:#1e2920; border-color:#1e2920; }
+a { color:#4e684f; }

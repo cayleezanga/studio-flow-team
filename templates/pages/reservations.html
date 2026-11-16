@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block title %}Reservations | Studio Flow{% endblock %}
+{% block content %}
+<h1 class="display-6 fw-semibold">Reservations</h1>
+<p class="lead">Online booking is the next feature we will build.</p>
+<p>Once we have our six PostgreSQL tables, visitors will be able to create, view, edit, and cancel class reservations. For now, explore the sample schedule.</p>
+<a class="btn btn-dark" href="{% url 'schedule' %}">View class schedule</a>
+{% endblock %}

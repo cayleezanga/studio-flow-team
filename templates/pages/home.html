@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Studio Flow | Pilates Studio{% endblock %}
+{% block content %}
+<section class="hero rounded-4 p-5 mb-5">
+  <div class="col-lg-8">
+    <div class="text-uppercase small fw-semibold letter-spacing mb-3">Mindful movement · Every day</div>
+    <h1 class="display-4 fw-semibold">Find your flow.</h1>
+    <p class="lead my-3">A welcoming Pilates studio for every experience level. Explore classes, meet your instructors, and find a session that fits your schedule.</p>
+    <a class="btn btn-dark btn-lg mt-2" href="{% url 'schedule' %}">Explore classes</a>
+  </div>
+</section>
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3"><h2 class="h3">Popular classes</h2><a href="{% url 'schedule' %}">Full schedule</a></div>
+<div class="row g-3">
+{% for session in featured %}
+  <div class="col-md-4"><div class="card h-100 border-0 session-card"><div class="card-body p-4">
+    <span class="text-uppercase small text-muted">{{ session.level }}</span>
+    <h3 class="h5 mt-2">{{ session.name }}</h3>
+    <p class="text-muted mb-2">{{ session.duration }} minutes · With {{ session.instructor }}</p>
+    <p class="mb-0">{{ session.day }} · {{ session.time }}</p>
+  </div></div></div>
+{% endfor %}
+</div>
+<p class="small text-muted mt-4">Prototype preview: class information is temporary sample data until we connect PostgreSQL.</p>
+{% endblock %}

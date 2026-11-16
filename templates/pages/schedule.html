@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Class Schedule | Studio Flow{% endblock %}
+{% block content %}
+<h1 class="display-6 fw-semibold">Class schedule</h1>
+<p class="text-muted">Explore our sample class lineup. Live booking and class availability will be added after the database is connected.</p>
+<div class="table-responsive mt-4"><table class="table table-hover align-middle">
+<thead class="table-light"><tr><th>Class</th><th>Level</th><th>Instructor</th><th>When</th><th>Duration</th><th>Spots*</th></tr></thead>
+<tbody>
+{% for s in sessions %}
+<tr><td class="fw-semibold">{{ s.name }}</td><td>{{ s.level }}</td><td>{{ s.instructor }}</td><td>{{ s.day }} · {{ s.time }}</td><td>{{ s.duration }} min</td><td>{{ s.spots }}</td></tr>
+{% endfor %}
+</tbody></table></div>
+<p class="small text-muted">*Sample availability only; no reservations can be made yet.</p>
+{% endblock %}
