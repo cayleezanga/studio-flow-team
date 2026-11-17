@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'pages',
+    'operations',  # our seven Neon tables (database-first)
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -49,8 +50,8 @@ TEMPLATES = [{
 }]
 WSGI_APPLICATION = 'django_project.wsgi.application'
 
-# Week 1: local SQLite is used only to run static starter pages.
-# Next: create seven tables in Neon and set DATABASE_URL in your private .env.
+# Set DATABASE_URL in .env to use the Studio Flow Neon database.
+# The SQLite fallback only helps with the initial static-page starter.
 DATABASES = {
     'default': dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
