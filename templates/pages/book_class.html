@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Book Class | Studio Flow{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-lg-7">
+  <h1 class="h2 mb-2">Book a Pilates class</h1>
+  <p class="text-muted">Staff demo: choose an existing member and available session. No payment will be charged.</p>
+  <form method="post" class="card border-0 shadow-sm"><div class="card-body p-4">
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+    {% for field in form %}
+    <div class="mb-3">{% if field.name == 'create_pending_payment' %}<div class="form-check">{{ field }} <label class="form-check-label" for="{{ field.id_for_label }}">{{ field.label }}</label></div><div class="form-text">Optional. This creates the reservation and its Pending payment record together in one atomic transaction. Paid reservations cannot be deleted; cancel instead.</div>{% else %}<label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% endif %}
+      {% if field.errors %}<div class="text-danger small mt-1">{{ field.errors }}</div>{% endif %}
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-dark">Confirm booking</button>
+    <a class="btn btn-link" href="{% url 'schedule' %}">Back to schedule</a>
+  </div></form>
+</div></div>
+{% endblock %}

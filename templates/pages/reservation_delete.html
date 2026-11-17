@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Delete Reservation | Studio Flow{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-lg-7">
+<h1 class="h2">Delete reservation #{{ reservation.pk }}?</h1>
+<p>Member: <strong>{{ reservation.member }}</strong> · Class: <strong>{{ reservation.session.class_type.class_name }}</strong></p>
+<div class="alert alert-warning">Deletion is permanent. Existing payment records are protected; if this reservation has a payment, use <strong>Change status → Cancelled</strong> instead.</div>
+<form method="post">{% csrf_token %}
+  <button type="submit" class="btn btn-danger">Yes, delete reservation</button>
+  <a class="btn btn-link" href="{% url 'reservation_detail' reservation.pk %}">Keep reservation</a>
+</form>
+</div></div>
+{% endblock %}

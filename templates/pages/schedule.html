@@ -2,13 +2,30 @@
 {% block title %}Class Schedule | Studio Flow{% endblock %}
 {% block content %}
 <h1 class="display-6 fw-semibold">Class schedule</h1>
-<p class="text-muted">Explore our sample class lineup. Live booking and class availability will be added after the database is connected.</p>
+<p class="text-muted">Explore our Pilates sessions. Studio staff can book spots for members.</p>
 <div class="table-responsive mt-4"><table class="table table-hover align-middle">
-<thead class="table-light"><tr><th>Class</th><th>Level</th><th>Instructor</th><th>When</th><th>Duration</th><th>Spots*</th></tr></thead>
+<thead class="table-light"><tr><th>Class</th><th>Level</th><th>Instructor</th><th>When</th><th>Room</th><th>Duration</th><th>Available</th><th></th></tr></thead>
 <tbody>
 {% for s in sessions %}
-<tr><td class="fw-semibold">{{ s.name }}</td><td>{{ s.level }}</td><td>{{ s.instructor }}</td><td>{{ s.day }} · {{ s.time }}</td><td>{{ s.duration }} min</td><td>{{ s.spots }}</td></tr>
+<tr>
+  <td class="fw-semibold">{{ s.class_type.class_name }}</td>
+  <td>{{ s.class_type.difficulty_level }}</td>
+  <td>{{ s.instructor.first_name }} {{ s.instructor.last_name }}</td>
+  <td>{{ s.session_date|date:'M j, Y' }} · {{ s.start_time|time:'g:i A' }}</td>
+  <td>{{ s.room.room_name }}</td>
+  <td>{{ s.class_type.duration_minutes }} min</td>
+  <td>{{ s.spots_remaining }} / {{ s.capacity }}</td>
+  <td>
+    {% if s.spots_remaining > 0 %}
+      <a class="btn btn-sm btn-dark" href="{% url 'book_class' %}?session={{ s.pk }}">Book class</a>
+    {% else %}
+      <span class="badge text-bg-secondary">Full</span>
+    {% endif %}
+  </td>
+</tr>
+{% empty %}
+<tr><td colspan="8" class="text-muted text-center py-4">No sessions found. Check your Neon sample data.</td></tr>
 {% endfor %}
 </tbody></table></div>
-<p class="small text-muted">*Sample availability only; no reservations can be made yet.</p>
+<p class="small text-muted">Available spots are calculated from the reservations marked Booked. Booking requires a studio staff login.</p>
 {% endblock %}

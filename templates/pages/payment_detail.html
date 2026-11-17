@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Payment #{{ payment.pk }} | Studio Flow{% endblock %}
+{% block content %}
+<h1 class="h2">Payment #{{ payment.pk }}</h1>
+<p class="text-muted">Demo payment record only. No money is collected or returned.</p>
+<div class="card border-0 shadow-sm"><div class="card-body p-4">
+  <dl class="row mb-3">
+    <dt class="col-sm-4">Reservation</dt><dd class="col-sm-8"><a href="{% url 'reservation_detail' payment.reservation.pk %}">#{{ payment.reservation.pk }}</a></dd>
+    <dt class="col-sm-4">Member</dt><dd class="col-sm-8">{{ payment.reservation.member.first_name }} {{ payment.reservation.member.last_name }}</dd>
+    <dt class="col-sm-4">Class</dt><dd class="col-sm-8">{{ payment.reservation.session.class_type.class_name }}</dd>
+    <dt class="col-sm-4">Amount</dt><dd class="col-sm-8">${{ payment.amount|floatformat:2 }}</dd>
+    <dt class="col-sm-4">Status</dt><dd class="col-sm-8"><strong>{{ payment.payment_status }}</strong></dd>
+    <dt class="col-sm-4">Method</dt><dd class="col-sm-8">{{ payment.payment_method|default:'—' }}</dd>
+    <dt class="col-sm-4">Date recorded paid</dt><dd class="col-sm-8">{{ payment.payment_date|date:'M j, Y'|default:'—' }}</dd>
+  </dl>
+  <a href="{% url 'payment_edit' payment.pk %}" class="btn btn-dark">Change payment status</a>
+  <a href="{% url 'payments' %}" class="btn btn-link">All payments</a>
+</div></div>
+{% endblock %}

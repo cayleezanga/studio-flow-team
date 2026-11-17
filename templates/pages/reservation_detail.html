@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Reservation #{{ reservation.pk }} | Studio Flow{% endblock %}
+{% block content %}
+<h1 class="h2">Reservation #{{ reservation.pk }}</h1>
+<div class="card border-0 shadow-sm mt-3"><div class="card-body p-4">
+  <dl class="row mb-3">
+    <dt class="col-sm-4">Member</dt><dd class="col-sm-8">{{ reservation.member.first_name }} {{ reservation.member.last_name }} ({{ reservation.member.email }})</dd>
+    <dt class="col-sm-4">Class</dt><dd class="col-sm-8">{{ reservation.session.class_type.class_name }}</dd>
+    <dt class="col-sm-4">Instructor</dt><dd class="col-sm-8">{{ reservation.session.instructor.first_name }} {{ reservation.session.instructor.last_name }}</dd>
+    <dt class="col-sm-4">Date &amp; time</dt><dd class="col-sm-8">{{ reservation.session.session_date|date:'M j, Y' }} · {{ reservation.session.start_time|time:'g:i A' }}</dd>
+    <dt class="col-sm-4">Room</dt><dd class="col-sm-8">{{ reservation.session.room.room_name }}</dd>
+    <dt class="col-sm-4">Booking date</dt><dd class="col-sm-8">{{ reservation.booking_date }}</dd>
+    <dt class="col-sm-4">Status</dt><dd class="col-sm-8"><strong>{{ reservation.booking_status }}</strong></dd>
+  </dl>
+  {% if reservation.payment %}
+    <p class="small">Payment: <a href="{% url 'payment_detail' reservation.payment.pk %}">{{ reservation.payment.payment_status }} — ${{ reservation.payment.amount }}</a></p>
+  {% else %}
+    <p class="small text-muted">No payment record for this reservation.</p>
+    {% if reservation.booking_status != 'Cancelled' %}<p><a href="{% url 'payment_new' %}?reservation={{ reservation.pk }}" class="btn btn-outline-success btn-sm">+ Record payment</a></p>{% endif %}
+  {% endif %}
+  <a class="btn btn-dark" href="{% url 'reservation_edit' reservation.pk %}">Change status</a>
+  <a class="btn btn-outline-danger" href="{% url 'reservation_delete' reservation.pk %}">Delete</a>
+  <a class="btn btn-link" href="{% url 'reservations' %}">All reservations</a>
+</div></div>
+<p class="text-muted small mt-3">Payment records are kept for the demo; no real charge is made. Reservations with a payment record cannot be deleted; cancel them instead.</p>
+{% endblock %}

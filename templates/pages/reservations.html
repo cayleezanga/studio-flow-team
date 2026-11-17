@@ -1,8 +1,24 @@
 {% extends 'base.html' %}
 {% block title %}Reservations | Studio Flow{% endblock %}
 {% block content %}
-<h1 class="display-6 fw-semibold">Reservations</h1>
-<p class="lead">Online booking is the next feature we will build.</p>
-<p>Once we have our six PostgreSQL tables, visitors will be able to create, view, edit, and cancel class reservations. For now, explore the sample schedule.</p>
-<a class="btn btn-dark" href="{% url 'schedule' %}">View class schedule</a>
+<div class="d-flex justify-content-between align-items-center mb-3 gap-3">
+  <div><h1 class="display-6 fw-semibold mb-1">Reservations</h1><p class="text-muted mb-0">Staff view · real booking records from Neon</p></div>
+  <a class="btn btn-dark" href="{% url 'book_class' %}">+ New booking</a>
+</div>
+<div class="table-responsive"><table class="table table-hover align-middle">
+<thead class="table-light"><tr><th>ID</th><th>Member</th><th>Class</th><th>Session</th><th>Status</th><th></th></tr></thead>
+<tbody>
+{% for r in reservations %}
+<tr>
+  <td>#{{ r.pk }}</td>
+  <td>{{ r.member.first_name }} {{ r.member.last_name }}</td>
+  <td>{{ r.session.class_type.class_name }}</td>
+  <td>{{ r.session.session_date|date:'M j, Y' }} · {{ r.session.start_time|time:'g:i A' }}</td>
+  <td><span class="badge {% if r.booking_status == 'Booked' %}text-bg-success{% elif r.booking_status == 'Cancelled' %}text-bg-secondary{% else %}text-bg-info{% endif %}">{{ r.booking_status }}</span></td>
+  <td><a href="{% url 'reservation_detail' r.pk %}">View / manage</a></td>
+</tr>
+{% empty %}
+<tr><td colspan="6">No reservations yet. Create your first booking.</td></tr>
+{% endfor %}
+</tbody></table></div>
 {% endblock %}
