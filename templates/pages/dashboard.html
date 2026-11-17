@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% block title %}Studio Dashboard | Studio Flow{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+  <div>
+    <p class="text-uppercase small fw-bold mb-1" style="letter-spacing:.12em;color:#63806f">Studio management</p>
+    <h1 class="display-6 fw-semibold mb-1">Studio dashboard</h1>
+    <p class="text-muted mb-0">A live snapshot of class bookings and payment records from Neon.</p>
+  </div>
+  <span class="badge text-bg-light border text-secondary fs-6">As of {{ today|date:"M j, Y" }}</span>
+</div>
+
+<div class="row g-3 mt-3 mb-5">
+  <div class="col-sm-6 col-xl-3">
+    <div class="card h-100 shadow-sm border-0 bg-light">
+      <div class="card-body p-4">
+        <div class="small text-muted mb-2">Currently booked reservations</div>
+        <div class="display-5 fw-semibold">{{ reservation_totals.booked }}</div>
+        <div class="small text-secondary">{{ reservation_totals.total }} reservations ever recorded</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="card h-100 shadow-sm border-0 bg-light">
+      <div class="card-body p-4">
+        <div class="small text-muted mb-2">Members in the system</div>
+        <div class="display-5 fw-semibold">{{ members_count }}</div>
+        <div class="small text-secondary">From the members table</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="card h-100 shadow-sm border-0 bg-light">
+      <div class="card-body p-4">
+        <div class="small text-muted mb-2">Upcoming class sessions</div>
+        <div class="display-5 fw-semibold">{{ upcoming_sessions_count }}</div>
+        <div class="small text-secondary">Today and later</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="card h-100 shadow-sm border-0 bg-light">
+      <div class="card-body p-4">
+        <div class="small text-muted mb-2">Recorded paid amount</div>
+        <div class="display-6 fw-semibold">${{ paid_total|floatformat:2 }}</div>
+        <div class="small text-secondary">Payments currently marked Paid</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 mb-5">
+  <section class="col-lg-7" aria-labelledby="popular-title">
+    <div class="card border shadow-sm h-100">
+      <div class="card-body p-4">
+        <h2 id="popular-title" class="h4">Most popular class types</h2>
+        <p class="text-muted small">Bookable or attended reservations, grouped by Pilates class type. Cancelled reservations are excluded.</p>
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light"><tr><th scope="col">Class</th><th scope="col">Level</th><th scope="col" class="text-end">Booked</th><th scope="col" class="text-end">Attended</th><th scope="col" class="text-end">Total</th></tr></thead>
+            <tbody>
+              {% for item in popular_classes %}
+              <tr>
+                <td class="fw-semibold">{{ item.class_name }}</td>
+                <td>{{ item.difficulty_level }}</td>
+                <td class="text-end">{{ item.current_bookings }}</td>
+                <td class="text-end">{{ item.attended }}</td>
+                <td class="text-end fw-semibold">{{ item.total_noncancelled }}</td>
+              </tr>
+              {% empty %}<tr><td colspan="5" class="text-center text-muted py-4">No classes yet.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="col-lg-5" aria-labelledby="payments-title">
+    <div class="card border shadow-sm h-100">
+      <div class="card-body p-4">
+        <h2 id="payments-title" class="h4">Payment record summary</h2>
+        <p class="text-muted small">Number of records and total amounts, grouped by payment status.</p>
+        <div class="table-responsive">
+          <table class="table align-middle mb-0">
+            <thead class="table-light"><tr><th scope="col">Status</th><th scope="col" class="text-end">Records</th><th scope="col" class="text-end">Amount</th></tr></thead>
+            <tbody>
+            {% for p in payment_breakdown %}
+              <tr>
+                <td><span class="badge {% if p.status == 'Paid' %}text-bg-success{% elif p.status == 'Refunded' %}text-bg-secondary{% else %}text-bg-warning{% endif %}">{{ p.status }}</span></td>
+                <td class="text-end">{{ p.count }}</td>
+                <td class="text-end">${{ p.amount|floatformat:2 }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <a href="{% url 'payments' %}" class="btn btn-sm btn-outline-dark mt-3">View payment records</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<section class="mb-4" aria-labelledby="upcoming-title">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div>
+      <h2 id="upcoming-title" class="h4 mb-1">Next five class sessions</h2>
+      <p class="small text-muted mb-0">Remaining spots are calculated from session capacity minus currently Booked reservations.</p>
+    </div>
+    <a class="btn btn-outline-dark btn-sm" href="{% url 'schedule' %}">Full schedule</a>
+  </div>
+  <div class="table-responsive border rounded-3">
+    <table class="table table-striped align-middle mb-0">
+      <thead class="table-light"><tr><th scope="col">Class</th><th scope="col">Instructor</th><th scope="col">When</th><th scope="col">Room</th><th scope="col" class="text-end">Available</th></tr></thead>
+      <tbody>
+        {% for s in upcoming %}
+          <tr>
+            <td class="fw-semibold">{{ s.class_type.class_name }}</td>
+            <td>{{ s.instructor.first_name }} {{ s.instructor.last_name }}</td>
+            <td>{{ s.session_date|date:"M j, Y" }} · {{ s.start_time|time:"g:i A" }}</td>
+            <td>{{ s.room.room_name }}</td>
+            <td class="text-end">{{ s.spots_remaining }} / {{ s.capacity }}</td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="5" class="text-muted text-center py-4">No upcoming class sessions are scheduled.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<p class="small text-muted mt-4 mb-0">Class-project demonstration only. Payment records are manually tracked; no real charges or refunds are processed. This page shows database results rather than hard-coded figures.</p>
+{% endblock %}

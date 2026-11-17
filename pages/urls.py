@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views, payment_views
 
+from . import dashboard_views
+
 urlpatterns = [
     path('', views.home, name='home'),
     path('schedule/', views.schedule, name='schedule'),
@@ -13,5 +15,6 @@ urlpatterns = [
     path('payments/new/', payment_views.payment_new, name='payment_new'),
     path('payments/<int:pk>/', payment_views.payment_detail, name='payment_detail'),
     path('payments/<int:pk>/edit/', payment_views.payment_edit, name='payment_edit'),
+    path('dashboard/', dashboard_views.dashboard, name='dashboard'),
     path('about/', views.about, name='about'),
 ]
